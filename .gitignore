@@ -23,7 +23,7 @@
 # Compiled Static libraries
 *.lai
 *.la
-*.a
+# *.a
 *.lib
 
 # Executables
@@ -35,4 +35,9 @@
 *.DS_Store
 
 # Build folder
+out
 build
+
+# VS Code things
+.cache
+.vscode
