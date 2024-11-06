@@ -1,0 +1,7 @@
+# STRUCTURE
+
+
+## Initialize
+
+
+## Main (Loop)
