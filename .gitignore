@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Mac File metadata
+*.DS_Store
+
+# Build folder
+build
