@@ -48,6 +48,11 @@ find_path(RAYLIB_INCLUDES raylib.h ext/raylib/raylib.h)
 target_include_directories(${PROJECT_NAME} PUBLIC ${RAYLIB_INCLUDES})
 target_link_libraries(${PROJECT_NAME} ${RAY_LIB})
 
+find_library(FMT_LIB raylib ext/raylib/libraylib.a)
+target_include_directories(${PROJECT_NAME} PRIVATE
+                ext/fmt)
+target_link_libraries(${PROJECT_NAME} ${FMT_LIB})
+
 if (IS_MACOS)
     target_link_libraries(${PROJECT_NAME} "-framework IOKit")
     target_link_libraries(${PROJECT_NAME} "-framework Cocoa")

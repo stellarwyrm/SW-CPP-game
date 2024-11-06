@@ -1,5 +1,5 @@
 #include "ecs.hpp"
-#include "macros.hpp"
+#include "defines.hpp"
 
 
 // #define NDEBUG // (uncomment to disable asserts)
