@@ -13,16 +13,30 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(IS_LINUX 1)
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     # macOS
+    if (POLICY CMP0025)
+        cmake_policy(SET CMP0025 NEW)
+    endif ()
     set(IS_MACOS 1)
 else()
     message(FATAL_ERROR "OS not supported.")
 endif()
 
+# Use C++20
+set (CMAKE_CXX_STANDARD 20)
+
 # Executable 
+# main executable# main executable
 add_executable(${PROJECT_NAME} 
                 src/main.cpp)
+
+# Global defines
+target_include_directories(${PROJECT_NAME} PRIVATE
+                src)
+
+add_subdirectory(src)
+
 target_compile_features(${PROJECT_NAME} 
-                PUBLIC
+                PRIVATE
                 cxx_std_20)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS 0)
