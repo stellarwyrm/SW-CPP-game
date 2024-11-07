@@ -30,13 +30,13 @@ namespace UI {
     };
 
     /**
-     * @brief ScreenPosition is necessary for UI to be rendered. Indicates 
+     * @brief ScreenPos is necessary for UI to be rendered. Indicates 
      * the screen coordinates or screen-relative coordinates of the element.
      * 
      */
-    struct ScreenPosition {
+    struct ScreenPos {
         Vector2 coords;
-        
+        bool isScreenRelative;
     };
 
     /**
@@ -45,6 +45,14 @@ namespace UI {
      * An entity can have multiple of one.
      */
     struct Text {
+        /**
+         * @brief Add text component to an entity.
+         * 
+         * @param uiEntity The entity to which the text component will be added to
+         * @param content 
+         * @param size Font size
+         * @param font If none given, value set to defaultFont
+         */
         Text(ECS::Entity uiEntity, std::string content, int size = 20, Font font = defaultFont);
         std::string content;
         Font font;
@@ -56,7 +64,14 @@ namespace UI {
      * 
      */
     class UISystem {
-        ivec2 screen_size;
+        ivec2 max_screen_size;
+        /**
+         * @brief Incremental step for UISystem
+         * 
+         * @param elapsed_ms Since last step.
+         * @param screen_size 
+         */
+        void step(float elapsed_ms, ivec2 screen_size);
     };
 };
 
