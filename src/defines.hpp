@@ -2,9 +2,15 @@
 #ifndef DEBUGMODE
 #include <iostream>
 #  define DEBUG_LOG(x) do {std::cerr << x;} while (0)
+#  define FLUSH() do {std::cerr.flush();} while (0)
 #else
 #  define DEBUG_LOG(x) do {} while (0)
 #endif
+
+/**
+ * @brief ivec2: 2D Integer vector (good for xy coordinates).
+ * 
+ */
 
 struct ivec2_ {
     ivec2_(int x_, int y_):x(x_),y(y_){}

@@ -41,3 +41,6 @@ build
 # VS Code things
 .cache
 .vscode
+
+# Doxygen
+doxygen/*

@@ -1,6 +1,6 @@
-# add_library(ecs INTERFACE)
+# add_library(ui INTERFACE)
 # target_sources(${PROJECT_NAME} PRIVATE
-#                 ecs.cpp)
+#                 ui.cpp)
 
 # target_include_directories(${PROJECT_NAME} PUBLIC
-#                 ecs.hpp)
+#                 ui.hpp)

@@ -43,7 +43,7 @@ void ContainerInterface::list_all_components() {
 		}
 	}
 #ifndef DEBUGMODE
-    std::cerr.flush();
+    FLUSH();
 #endif
 }
 

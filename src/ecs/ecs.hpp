@@ -2,15 +2,23 @@
 #include <vector>
 #include <unordered_map>
 
+#ifndef DEBUGMODE
+#include <assert.h>
+#else
+#  define assert(x) {}
+#endif
+
 // This is mostly based off of the tinyecs.hpp code provided by UBC's CPSC 427 course.
 
 namespace ECS {
 
     template <typename Component>
     class ComponentContainer;
-    
-    // For recycling Entity IDs
 
+	template<class Component>
+	ComponentContainer<Component> registry;
+    
+    // For recycling Entity IDs (TODO)
     // Entity IDs
     static unsigned int id_count = 1;
     static std::vector<unsigned int> recycleQueue = {};
@@ -39,6 +47,8 @@ namespace ECS {
     private:
     };
 
+
+	// From CS427 
     // Common interface to refer to all containers in the ECS registry
 	struct ContainerInterface
 	{

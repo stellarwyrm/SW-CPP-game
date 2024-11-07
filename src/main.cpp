@@ -6,7 +6,11 @@ using Clock = std::chrono::high_resolution_clock;
 #include <raylib.h>
 
 
-#include <defines.hpp>
+#include "defines.hpp"
+
+
+#include "ui.hpp"
+#include "ecs.hpp"
 
 ivec2 screen_size(600, 400);
 int main() 
@@ -14,6 +18,16 @@ int main()
     // Initialize window and framerate
     InitWindow(screen_size.x, screen_size.y, "Test Window");
     SetTargetFPS(60);
+
+    auto e = UI::Element<UI::MENU>::createUI();
+    UI::Text(e, "Test test test");
+    e = UI::Element<UI::MENU>::createUI();
+    UI::Text(e, "Test test test1");
+    UI::Text(e, "Test test test2");
+
+    e = UI::Element<UI::MENU>::createUI();
+    UI::Text(e, "Test test test");
+    ECS::ContainerInterface::list_all_components();
 
     // Keep track of time
     auto t = Clock::now();
@@ -30,6 +44,7 @@ int main()
     }
 
     CloseWindow();
+
 
     return 0;
 }

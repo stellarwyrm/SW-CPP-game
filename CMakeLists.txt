@@ -31,8 +31,7 @@ add_executable(${PROJECT_NAME}
 
 # Global defines
 target_include_directories(${PROJECT_NAME} PRIVATE
-                src)
-
+                ${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_subdirectory(src)
 
 target_compile_features(${PROJECT_NAME} 
