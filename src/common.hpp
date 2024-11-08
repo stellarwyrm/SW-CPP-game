@@ -17,3 +17,13 @@ struct ivec2_ {
     int x, y;
 };
 typedef struct ivec2_ ivec2;
+
+/**
+ * @brief Base class for all components.
+ * 
+ * For now, mostly just for distinguishing between component structs 
+ * and non-component structs.
+ */
+struct Component {
+    virtual ~Component();
+};

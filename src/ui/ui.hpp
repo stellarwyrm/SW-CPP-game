@@ -14,6 +14,11 @@ namespace UI {
         DIALOGUE,
         BUTTON
     };
+
+    struct Style {
+
+    };
+
     /**
      * @brief UI:Element component
      * 
@@ -21,7 +26,7 @@ namespace UI {
      * tag of the element.
      * 
      */
-    template <Tag T> struct Element {
+    template <Tag T> struct Element : virtual Component {
         static ECS::Entity createUI() {
             auto e = ECS::Entity();
             ECS::registry<Element<T>>.emplace(e);
@@ -37,7 +42,7 @@ namespace UI {
      *  
      * Coordinates start from the top left. 
      */
-    struct Transform : NodeComponent {
+    struct Transform : virtual TreeNode {
         Vector2 size;
         Vector2 coords;
         /**
@@ -53,9 +58,9 @@ namespace UI {
     /**
      * @brief Text block component.
      * 
-     * An entity can have multiple of one.
+     * An entity can have multiple text components.
      */
-    struct Text {
+    struct Text : virtual Component {
         /**
          * @brief Add text component to an entity.
          * 

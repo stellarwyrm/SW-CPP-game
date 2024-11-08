@@ -2,20 +2,20 @@
 #include <memory>
 #include <vector>
 #include "ecs.hpp"
+#include "common.hpp"
 
 /**
- * @brief NodeComponent base class
+ * @brief TreeNode base class
  * 
  */
-class NodeComponent : public std::enable_shared_from_this<NodeComponent> {
-public:
-    std::weak_ptr<NodeComponent> parent;
-    std::vector<std::shared_ptr<NodeComponent>> children;
-    void addChild(std::shared_ptr<NodeComponent>& child) {
+struct TreeNode : virtual public std::enable_shared_from_this<TreeNode> {
+    std::weak_ptr<TreeNode> parent;
+    std::vector<std::shared_ptr<TreeNode>> children;
+    void addChild(std::shared_ptr<TreeNode>& child) {
         children.push_back(child);
         child->parent = shared_from_this();
     }
-    void removeChild(std::shared_ptr<NodeComponent>& child) {
+    void removeChild(std::shared_ptr<TreeNode>& child) {
         children.erase(std::remove(children.begin(), children.end(), child), children.end());
     }
 
@@ -26,5 +26,23 @@ public:
             child->traverse(func);
         }
     }
+
+    // https://stackoverflow.com/a/318137
+    virtual ~TreeNode ();
 };
 
+// Graph implementation:
+struct GraphEdge;
+
+struct GraphNode {
+    std::vector<std::shared_ptr<GraphEdge>> edges;
+};
+
+/**
+ * @brief Edges between graph nodes.
+ * Can be used for transitions.
+ */
+struct GraphEdge {
+    std::weak_ptr<GraphNode> origin;
+    std::weak_ptr<GraphNode> dest;
+};

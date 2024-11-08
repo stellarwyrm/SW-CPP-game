@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.24)
 project(sw-cpp VERSION 0.1.0 
                 DESCRIPTION "stellarwyrm's CPP Game Engine"
                 LANGUAGES C CXX)
+
+cmake_policy(VERSION 3.24)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -41,16 +43,29 @@ target_compile_features(${PROJECT_NAME}
 set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS 0)
 
 # Dependencies
+option(USE_EXTERNAL_JSON "Use an external JSON library" OFF)
+
+# rayLib
 find_library(RAY_LIB raylib ext/raylib/libraylib.a)
 find_path(RAYLIB_INCLUDES raylib.h ext/raylib/raylib.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${RAYLIB_INCLUDES})
 target_link_libraries(${PROJECT_NAME} ${RAY_LIB})
 
-find_library(FMT_LIB raylib ext/raylib/libraylib.a)
+# fmt lib
+find_library(FMT_LIB fmtlib ext/raylib/libfmt.a)
 target_include_directories(${PROJECT_NAME} PRIVATE
                 ext/fmt)
 target_link_libraries(${PROJECT_NAME} ${FMT_LIB})
+
+# nlohmann json
+
+include(FetchContent)
+
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
+    FetchContent_MakeAvailable(json)
+
+target_link_libraries(${PROJECT_NAME} nlohmann_json::nlohmann_json)
 
 if (IS_MACOS)
     target_link_libraries(${PROJECT_NAME} "-framework IOKit")
