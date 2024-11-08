@@ -6,7 +6,7 @@ using Clock = std::chrono::high_resolution_clock;
 #include <raylib.h>
 
 
-#include "defines.hpp"
+#include "common.hpp"
 
 
 #include "ui.hpp"

@@ -1,12 +1,10 @@
 #include <raylib.h>
 #include "ui.hpp"
 
-using namespace UI;
 
-Font defaultFont = GetFontDefault();
+Font UI::defaultFont = GetFontDefault();
 
-
-Text::Text(ECS::Entity uiEntity, std::string content, int size, Font font): 
+UI::Text::Text(ECS::Entity uiEntity, std::string content, int size, Font font): 
     content(std::move(content)),
     size(size), 
     font(font)
@@ -14,7 +12,7 @@ Text::Text(ECS::Entity uiEntity, std::string content, int size, Font font):
     ECS::registry<Text>.insert(uiEntity, *this, false);
 }
 
-void UISystem::step(float elapsed_ms, ivec2 screen_size)
+void UI::UISystem::step(float elapsed_ms, ivec2 screen_size)
 {
     max_screen_size = screen_size;
 

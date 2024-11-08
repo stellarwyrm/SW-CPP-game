@@ -1,6 +1,6 @@
 #pragma once
 #include "raylib.h"
-#include "defines.hpp"
+#include "common.hpp"
 #include "ecs.hpp"
 #include <string>
 

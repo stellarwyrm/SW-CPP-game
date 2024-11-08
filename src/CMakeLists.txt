@@ -6,9 +6,11 @@ target_sources(${PROJECT_NAME}
             PRIVATE
                 ecs/ecs.hpp
                 ui/ui.hpp
-                defines.hpp
+                common.hpp
+                node.hpp
             PRIVATE
                 ecs/ecs.cpp
-                ui/ui.cpp)
+                ui/ui.cpp
+                node.cpp)
 
 
