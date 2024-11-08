@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "common.hpp"
 #include "ecs.hpp"
+#include "node.hpp"
 #include <string>
 
 namespace UI {
@@ -30,13 +31,23 @@ namespace UI {
     };
 
     /**
-     * @brief ScreenPos is necessary for UI to be rendered. Indicates 
+     * @brief Transform is necessary for UI to be rendered. Indicates 
      * the screen coordinates or screen-relative coordinates of the element.
-     * 
+     * Also indicates size, rotation, etc.
+     *  
+     * Coordinates start from the top left. 
      */
-    struct ScreenPos {
+    struct Transform : NodeComponent {
+        Vector2 size;
         Vector2 coords;
-        bool isScreenRelative;
+        /**
+         * @brief If isRelative is true, size and coords relative to parent. 
+         * If there is no parent component, then isRelative is treated as
+         * false.
+         * For example, for isRelative == true, then a size of {1,1} would mean
+         * that the item is the same size as its parent.
+         */
+        bool isRelative;
     };
 
     /**

@@ -38,7 +38,7 @@ int main()
             auto now = Clock::now();
 		    float elapsed_ms = static_cast<float>((std::chrono::duration_cast<std::chrono::microseconds>(now - t)).count()) / 1000.f;
 		    t = now;
-            DrawText("Test test test test", 20, 300, 40, BLACK);
+            DrawText("Test test test test", 0, 0, 40, BLACK);
             DrawText(("Time (ms) between frames: " + std::to_string(elapsed_ms)).c_str(), 20, 340, 20, RED);
         EndDrawing();
     }
