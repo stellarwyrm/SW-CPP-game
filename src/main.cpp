@@ -7,6 +7,7 @@ using Clock = std::chrono::high_resolution_clock;
 
 
 #include "common.hpp"
+#include "node.hpp"
 
 
 #include "ui.hpp"
@@ -21,13 +22,23 @@ int main()
 
     auto e = UI::Element<UI::MENU>::createUI();
     UI::Text(e, "Test test test");
-    e = UI::Element<UI::MENU>::createUI();
-    UI::Text(e, "Test test test1");
-    UI::Text(e, "Test test test2");
 
-    e = UI::Element<UI::MENU>::createUI();
-    UI::Text(e, "Test test test");
-    ECS::ContainerInterface::list_all_components();
+
+    try
+    {
+        auto g = Graph();
+        auto nodeA = GraphNode::createNode();
+        auto nodeB = GraphNode::createNode();
+        auto edge = nodeA->attachNode(nodeB);
+
+        g.addNode(nodeA);
+        g.addNode(nodeB);
+        g.addEdge(edge);
+    }
+    catch (const std::bad_weak_ptr& e)
+    {
+        std::cout << e.what() << '\n';
+    }
 
     // Keep track of time
     auto t = Clock::now();

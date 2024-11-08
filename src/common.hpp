@@ -25,5 +25,5 @@ typedef struct ivec2_ ivec2;
  * and non-component structs.
  */
 struct Component {
-    virtual ~Component();
+    virtual ~Component() {}
 };
