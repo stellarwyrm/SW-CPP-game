@@ -10,6 +10,7 @@ namespace UI {
     extern Font defaultFont;
 
     enum Tag {
+        NONE,
         MENU,
         DIALOGUE,
         BUTTON
@@ -26,25 +27,28 @@ namespace UI {
      * tag of the element.
      * 
      */
-    template <Tag T> struct Element : virtual Component {
+    struct Element : virtual Component {
         static ECS::Entity createUI() {
             auto e = ECS::Entity();
-            ECS::registry<Element<T>>.emplace(e);
+            ECS::registry<Element>.emplace(e);
             return e;
         }
         bool active = true;
+        Tag tag;
     };
 
     /**
-     * @brief Transform is necessary for UI to be rendered. Indicates 
+     * @brief Transform is the (n-ary tree) entity class for UI. Indicates 
      * the screen coordinates or screen-relative coordinates of the element.
      * Also indicates size, rotation, etc.
      *  
      * Coordinates start from the top left. 
      */
-    struct Transform : virtual TreeNode {
+    struct Transform : virtual TreeNode<Transform> {
+        Transform(ECS::Entity uiEntity, vec2 size, vec2 coords, bool isRelative);
         Vector2 size;
         Vector2 coords;
+        ECS::Entity entity;
         /**
          * @brief If isRelative is true, size and coords relative to parent. 
          * If there is no parent component, then isRelative is treated as
@@ -53,6 +57,8 @@ namespace UI {
          * that the item is the same size as its parent.
          */
         bool isRelative;
+        void clearAllChildren();
+        void draw();
     };
 
     /**
@@ -80,14 +86,21 @@ namespace UI {
      * 
      */
     class UISystem {
-        ivec2 max_screen_size;
-        /**
-         * @brief Incremental step for UISystem
-         * 
-         * @param elapsed_ms Since last step.
-         * @param screen_size 
-         */
-        void step(float elapsed_ms, ivec2 screen_size);
+        public:
+            UISystem();
+            ivec2 max_screen_size = ivec2(0,0);
+            /**
+             * @brief Incremental step for UISystem
+             * 
+             * @param elapsed_ms Since last step.
+             * @param screen_size 
+             */
+            // void step(float elapsed_ms, const ivec2& screen_size);
+            void drawTree(
+                float elapsed_ms,  std::weak_ptr<UI::Transform> tree, 
+                const ivec2& parent_size, const ivec2& relative_origin = ivec2(0,0));
+        private:
+            void drawTransform(ivec2 size, ivec2 pixelPos, ECS::Entity& e);
     };
 };
 

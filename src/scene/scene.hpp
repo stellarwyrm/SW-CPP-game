@@ -14,12 +14,31 @@
  * @brief Contains information about scene and sub-scenes.
  * Sub-scenes are useful for things such as a menu tree. 
  */
-struct Scene {
+struct Scene : public GraphNode<Scene> {
+    Scene() = delete;
+    Scene(std::string name, vec2 screen_size);
     std::string name;
+    unsigned int sceneID;
+    std::shared_ptr<UI::Transform> screen;
 };
 
-static Scene SceneEditor;
+struct SceneTransition : public GraphEdge<Scene> {
+};
+
+struct SceneGraph : public Graph<Scene, SceneTransition> {
+};
 
 class SceneSystem {
-    void step(float elapsed_ms, ivec2 screen_size);
+    public:
+        SceneSystem(ivec2 screen_size);
+        void loadScene(const Scene scene);
+        void loadSceneTransition(const SceneTransition nextScene);
+        void unloadCurrentScene();
+        void step(float elapsed_ms, const ivec2& screen_size);
+        ~SceneSystem();
+    private: 
+        SceneGraph scenes;
+        std::shared_ptr<Scene> currentScene;
+        UI::UISystem ui;
+        static std::shared_ptr<Scene> sceneEditor();
 };
