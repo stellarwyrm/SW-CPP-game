@@ -14,7 +14,7 @@ using Clock = std::chrono::high_resolution_clock;
 #include "ecs.hpp"
 #include "scene.hpp"
 
-ivec2 screen_size(600, 400);
+ivec2 screen_size(1280, 720);
 int main() 
 {
     // Initialize window and framerate
@@ -60,7 +60,7 @@ int main()
 
         BeginDrawing();
         
-        ClearBackground(LIGHTGRAY);
+        ClearBackground(rgba(15, 12, 30));
         DrawText("Test test test test", 0, 0, 40, BLACK);
         DrawText(("Time (ms) between frames: " + std::to_string(elapsed_ms)).c_str(), 20, screen_size.y - 60, 20, RED);
 
