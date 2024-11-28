@@ -1,9 +1,14 @@
 cmake_minimum_required(VERSION 3.24)
+cmake_policy(VERSION 3.24)
+
+# Use C++20
+set(CMAKE_CXX_COMPILER "g++")
+set(CMAKE_CXX_STANDARD 20)
+
 project(sw-cpp VERSION 0.1.0 
                 DESCRIPTION "stellarwyrm's CPP Game Engine"
                 LANGUAGES C CXX)
 
-cmake_policy(VERSION 3.24)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -22,9 +27,6 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 else()
     message(FATAL_ERROR "OS not supported.")
 endif()
-
-# Use C++20
-set (CMAKE_CXX_STANDARD 20)
 
 # Executable 
 # main executable# main executable
@@ -53,7 +55,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${RAYLIB_INCLUDES})
 target_link_libraries(${PROJECT_NAME} ${RAY_LIB})
 
 # fmt lib
-find_library(FMT_LIB fmtlib ext/raylib/libfmt.a)
+find_library(FMT_LIB fmt ext/fmt/libfmt.a)
 target_include_directories(${PROJECT_NAME} PRIVATE
                 ext/fmt)
 target_link_libraries(${PROJECT_NAME} ${FMT_LIB})

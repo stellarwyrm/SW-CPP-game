@@ -12,6 +12,7 @@
 
 // Coordinate systems
 struct vec2;
+struct ivec2;
 
 struct coord2D {
     const vec2 getCoord();
@@ -19,15 +20,19 @@ struct coord2D {
 
 
 struct vec2 : public Vector2, public virtual coord2D {
-    vec2(float _x, float _y){
+    vec2(float _x, float _y) {
         x = _x;
         y = _y;
     }
+    vec2(ivec2 ivec);
     const vec2 getCoord() {
         return vec2(x, y);
     }
     vec2 operator+(vec2 const& vec) {
         return vec2(x + vec.x, y + vec.y);
+    }
+    vec2 operator*(vec2 const& vec) {
+        return vec2(x * vec.x, y * vec.y);
     }
 };
 
@@ -39,15 +44,19 @@ struct vec2 : public Vector2, public virtual coord2D {
 
 struct ivec2: public virtual coord2D {
     ivec2(int x, int y):x(x),y(y){}
-    ivec2(Vector2 floatvec) {
+    ivec2(vec2 floatvec) {
         x = floatvec.x;
         y = floatvec.y;
+    }
+    ivec2 operator+(ivec2 const& vec) {
+        return ivec2(x + vec.x, y + vec.y);
     }
     const vec2 getCoord() {
         return vec2(x,y);
     }
     int x = 0, y = 0;
 };
+
 
 /**
  * @brief polarVec2: polar coordinate vector (for spinning?)
@@ -63,9 +72,13 @@ struct polarVec2: public virtual coord2D {
 };
 
 struct rgba : public Color {
-    rgba(unsigned char _r, unsigned char _g, unsigned char _b, unsigned char _a = 1)
+    rgba(unsigned char _r = 0, unsigned char _g = 0, unsigned char _b = 0, unsigned char _a = 255)
     {
         r = _r; g = _g; b = _b; a = _a;
+    }
+    rgba(Color c)
+    {
+        r = c.r; g = c.g; b = c.b; a = c.a;
     }
 };
 

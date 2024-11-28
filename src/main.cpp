@@ -46,6 +46,8 @@ int main()
     unsigned int flags = FLAG_WINDOW_RESIZABLE;
     SetWindowState(flags);
 
+    // auto tex = LoadTextureFromImage(GenImageColor(60, 60, BLUE));
+    DEBUG_LOG("Debug mode on.\n");
 
     while(!WindowShouldClose()) {
         auto now = Clock::now();
@@ -56,15 +58,14 @@ int main()
             screen_size.x = GetScreenWidth();
             screen_size.y = GetScreenHeight();
         }
-        scene.step(elapsed_ms, screen_size);
 
         BeginDrawing();
         
-        ClearBackground(rgba(15, 12, 30));
+        ClearBackground(rgba(200, 200, 200));
         DrawText("Test test test test", 0, 0, 40, BLACK);
         DrawText(("Time (ms) between frames: " + std::to_string(elapsed_ms)).c_str(), 20, screen_size.y - 60, 20, RED);
 
-
+        scene.step(elapsed_ms, screen_size);
 
         EndDrawing();
     }

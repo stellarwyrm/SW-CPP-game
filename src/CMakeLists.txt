@@ -7,10 +7,10 @@ add_subdirectory(ecs)
 add_subdirectory(ui)
 add_subdirectory(scene)
 
-# target_sources(${PROJECT_NAME} 
-#             PRIVATE
-#                 ecs/ecs.hpp
-#                 ui/ui.hpp
+target_sources(${PROJECT_NAME} 
+            PRIVATE
+                common.hpp
+                common.cpp)
 #                 common.hpp
 #                 node.hpp
 #             PRIVATE

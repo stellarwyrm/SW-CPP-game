@@ -31,9 +31,12 @@ std::shared_ptr<Scene> SceneSystem::sceneEditor() {
     auto scene = new Scene("Scene Editor", vec2(0, 0));
     auto&& screen = scene->screen;
 
-    auto& e = screen->entity;
-    UI::Text(e, "the scene editor");
-
+    UI::Text(screen->entity, "the scene editor");
+    auto& e = screen->addChild(UI::Transform::createTransform(vec2(1,1), vec2(0.5, 0.5), true));
+    UI::Box b = UI::Box(
+        std::make_unique<UI::FlatBG>(
+            UI::FlatBG(rgba(20, 50, 50))));
+    ECS::registry<UI::Box>.emplace(e, b);
     return std::shared_ptr<Scene>(scene);
 }
 
@@ -44,6 +47,8 @@ void SceneSystem::unloadCurrentScene()
 
 void SceneSystem::step(float elapsed_ms, const ivec2& screen_size)
 {
+    // DEBUG_LOG("Starting arrangeTree:\n");
+    currentScene->screen->size = screen_size;
     ui.drawTree(elapsed_ms, currentScene->screen, screen_size);
 }
 

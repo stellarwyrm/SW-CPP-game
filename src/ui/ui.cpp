@@ -1,23 +1,25 @@
 #include <raylib.h>
 #include "ui.hpp"
+#include "graphic.hpp"
 
 
-Font UI::defaultFont = GetFontDefault();
-
-UI::Text::Text(ECS::Entity uiEntity, std::string content, int size, Font font): 
-    content(std::move(content)),
-    size(size), 
-    font(font)
-{
-    ECS::registry<Text>.insert(uiEntity, *this);
-}
 
 UI::UISystem::UISystem()
 {}
 
 void UI::UISystem::drawTree(
-    float elapsed_ms,  std::weak_ptr<UI::Transform> tree, 
-    const ivec2& parent_size, const ivec2& relative_origin)
+    float elapsed_ms, std::weak_ptr<UI::Transform> tree, 
+    const ivec2 &parent_size, const ivec2 &relative_origin)
+{
+    arrangeTree(elapsed_ms, tree, parent_size, relative_origin);
+    for (auto const& [layer_order, e]:drawList) {
+        drawTransform(e);
+    }
+}
+
+void UI::UISystem::arrangeTree(
+    float elapsed_ms, std::weak_ptr<UI::Transform> tree,
+    const ivec2 &parent_size, const ivec2 &relative_origin)
 {
     if(tree.expired()) return;
     auto&& treeContent = tree.lock().get();
@@ -26,31 +28,65 @@ void UI::UISystem::drawTree(
     auto size = treeContent->size;
     auto origin = treeContent->coords;
 
+    if (treeContent->isRelative) {
+        size = vec2(parent_size) * size;
+        origin = vec2(relative_origin) + vec2(parent_size) * origin;
+    }
 
-    // auto& e = treeContent->entity;
-    drawTransform(size, origin, treeContent->entity);
-
-    // Draw children nodes
+    // Draw children nodes first
     for(auto& child : treeContent->children) {
-        drawTree(elapsed_ms, child, size, origin);
+        arrangeTree(elapsed_ms, child, size, origin);
+    }
+
+    if (UI::Element::isActive(treeContent->entity)) { 
+        arrangeTransform(size, origin, treeContent->entity);
+        drawList.insert({0, treeContent->entity});
     }
     return;
 }
 
-void UI::UISystem::drawTransform(ivec2 size, ivec2 pixelPos, ECS::Entity& e)
+void UI::UISystem::arrangeTransform(ivec2 size, ivec2 pixelPos, ECS::Entity& e)
 {
+    if(ECS::registry<Box>.has(e)) {
+        auto& b = ECS::registry<Box>.get(e);
+        if (!b.tex.isLoaded()) {
+            b.redraw(size, pixelPos);
+        }
+    }
     if(ECS::registry<Text>.has(e)) {
-        auto t = ECS::registry<Text>.get(e);
-        DrawText(t.content.c_str(), pixelPos.x, pixelPos.y, 20, BLUE);
+        auto& t = ECS::registry<Text>.get(e);
+        t.pixelPos = pixelPos;
     }
 }
 
-UI::Transform::Transform(ECS::Entity uiEntity, vec2 size, vec2 coords, bool isRelative):
-    entity(std::move(uiEntity)),
+void UI::UISystem::drawTransform(ECS::Entity e)
+{
+    if (!ECS::registry<Transform>.has(e)) return;
+    auto t = ECS::registry<Transform>.get(e);
+    if(ECS::registry<Box>.has(e)) {
+        auto& b = ECS::registry<Box>.get(e);
+        b.tex.draw();
+    }
+    if(ECS::registry<Text>.has(e)) {
+        auto& t = ECS::registry<Text>.get(e);
+        t.draw();
+    }
+}
+
+std::shared_ptr<UI::Transform> UI::Transform::createTransform(vec2 size, vec2 coords, bool isRelative)
+{
+    auto s = std::shared_ptr<UI::Transform>(
+        new UI::Transform(UI::Element::createUI(), size, coords, isRelative));
+    return s;
+}
+
+UI::Transform::Transform(ECS::Entity uiEntity, vec2 size, vec2 coords, bool isRelative)
+ :  entity(uiEntity),
     size(size),
     coords(coords),
     isRelative(isRelative)
 {
+    ECS::registry<Transform>.emplace(entity, *this);
 }
 
 void UI::Transform::clearAllChildren()

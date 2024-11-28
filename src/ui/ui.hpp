@@ -3,11 +3,12 @@
 #include "common.hpp"
 #include "ecs.hpp"
 #include "node.hpp"
+#include "graphic.hpp"
+#include "interactible.hpp"
 #include <string>
+#include <map>
 
 namespace UI {
-
-    extern Font defaultFont;
 
     enum Tag {
         NONE,
@@ -33,6 +34,11 @@ namespace UI {
             ECS::registry<Element>.emplace(e);
             return e;
         }
+        static bool isActive(ECS::Entity e) {
+            return 
+                ECS::registry<Element>.has(e) &&
+                ECS::registry<Element>.get(e).active;
+        }
         bool active = true;
         Tag tag;
     };
@@ -45,9 +51,13 @@ namespace UI {
      * Coordinates start from the top left. 
      */
     struct Transform : virtual TreeNode<Transform> {
+        static std::shared_ptr<Transform> createTransform(
+            vec2 size = vec2(0,0), 
+            vec2 coords = vec2(0,0), 
+            bool isRelative = false);
         Transform(ECS::Entity uiEntity, vec2 size, vec2 coords, bool isRelative);
-        Vector2 size;
-        Vector2 coords;
+        vec2 size;
+        vec2 coords;
         ECS::Entity entity;
         /**
          * @brief If isRelative is true, size and coords relative to parent. 
@@ -59,48 +69,41 @@ namespace UI {
         bool isRelative;
         void clearAllChildren();
         void draw();
+        ECS::Entity& addChild(std::shared_ptr<Transform> child) {
+            children.push_back(child);
+            child->parent = this->weak_from_this();
+            return child->entity;
+        }
     };
 
-    /**
-     * @brief Text block component.
-     * 
-     * An entity can have multiple text components.
-     */
-    struct Text : virtual Component {
-        /**
-         * @brief Add text component to an entity.
-         * 
-         * @param uiEntity The entity to which the text component will be added to
-         * @param content 
-         * @param size Font size
-         * @param font If none given, value set to defaultFont
-         */
-        Text(ECS::Entity uiEntity, std::string content, int size = 20, Font font = defaultFont);
-        std::string content;
-        Font font;
-        int size;
-    };
 
     /**
      * @brief UISystem, running on all UI::Elements. 
      * 
      */
     class UISystem {
-        public:
-            UISystem();
-            ivec2 max_screen_size = ivec2(0,0);
-            /**
-             * @brief Incremental step for UISystem
-             * 
-             * @param elapsed_ms Since last step.
-             * @param screen_size 
-             */
-            // void step(float elapsed_ms, const ivec2& screen_size);
-            void drawTree(
+    public:
+        UISystem();
+        ivec2 max_screen_size = ivec2(0,0);
+        /**
+         * @brief Incremental step for UISystem
+         * 
+         * @param elapsed_ms Since last step.
+         * @param screen_size 
+         */
+        // void step(float elapsed_ms, const ivec2& screen_size);
+
+        void drawTree(float elapsed_ms,  std::weak_ptr<UI::Transform> tree, 
+            const ivec2& parent_size, const ivec2& relative_origin = ivec2(0,0));
+
+        
+    private:
+        void arrangeTree(
                 float elapsed_ms,  std::weak_ptr<UI::Transform> tree, 
-                const ivec2& parent_size, const ivec2& relative_origin = ivec2(0,0));
-        private:
-            void drawTransform(ivec2 size, ivec2 pixelPos, ECS::Entity& e);
+                const ivec2& parent_size, const ivec2& relative_origin);
+        void arrangeTransform(ivec2 size, ivec2 pixelPos, ECS::Entity& e);
+        void drawTransform(ECS::Entity e);
+        std::multimap<int, ECS::Entity> drawList;
     };
 };
 

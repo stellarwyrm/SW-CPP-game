@@ -23,3 +23,7 @@ State machine for this one probably
 ## Char select
 
 ## Battle Mode
+Battle system
+Skills:
+Skill tree
+(System where you do spell incantations with melee combo)
